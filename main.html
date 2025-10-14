@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Huffman Compression</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<h1>Huffman Compression</h1>
+<div class="main-wrapper">
+    <div class="results-container">
+        <h2>Результаты</h2>
+        <p>Исходный текст (размер в символах): <span id="originalSize">0</span></p>
+        <p>Закодированный текст (размер в битах): <span id="encodedSize">0</span></p>
+        <pre id="encodedText"></pre>
+        <pre id="decodedText"></pre>
+        <h3>Дерево Хаффмана</h3>
+        <pre id="treeView"></pre>
+    </div>
+
+    <div class="text-area-container">
+        <div class="text-area-wrapper">
+            <textarea id="inputText" placeholder="Введите текст для сжатия"></textarea>
+            <div class="side-buttons">
+                <button class="side-btn">Текст</button>
+                <button class="side-btn">Файл</button>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="compressBtn">Сжать</button>
+            <button id="decompressBtn">Восстановить</button>
+            <button id="showTreeBtn" class="icon-btn" title="Показать дерево">
+                <i data-lucide="tree-pine"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script type="module" src="../HuffmanCoding/huffman/HuffmanTree.js"></script>
+<script>
+  lucide.createIcons();
+</script>
+</body>
+</html>
