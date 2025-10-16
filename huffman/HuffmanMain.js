@@ -17,10 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const decompressBtn = document.getElementById("decompressBtn");
     const showTreeBtn = document.getElementById("showTreeBtn");
     const treeView = document.getElementById("treeView");
-    if (!showTreeBtn) {
-        console.error("❌ Кнопка 'showTreeBtn' не найдена в HTML!");
-        return;
-    }
     compressBtn.addEventListener("click", () => {
         const text = document.getElementById("inputText").value.trim();
         if (!text) {
