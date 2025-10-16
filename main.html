@@ -16,8 +16,6 @@
         <p>Закодированный текст (размер в битах): <span id="encodedSize">0</span></p>
         <pre id="encodedText"></pre>
         <pre id="decodedText"></pre>
-        <h3>Дерево Хаффмана</h3>
-        <pre id="treeView"></pre>
     </div>
 
     <div class="text-area-container">
@@ -38,11 +36,18 @@
         </div>
     </div>
 </div>
+<div class="tree-container">
+    <h2>Дерево Хаффмана</h2>
+    <pre id="treeView"></pre>
+</div>
 
 
-<script type="module" src="../HuffmanCoding/huffman/HuffmanTree.js"></script>
+<script type="module" src="./huffman/HuffmanMain.js"></script>
 <script>
+window.addEventListener("load", () => {
   lucide.createIcons();
+});
 </script>
+
 </body>
 </html>

@@ -148,3 +148,22 @@ pre {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+.tree-container {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px  #6a3b09;
+    background-color: #fff;
+    font-family: monospace;
+    white-space: pre;
+    max-height: 300px;
+    overflow: auto;
+    width: 80%;
+    align-self: stretch; 
+}
+.tree-container h2 {
+    font-size: 20px;
+    text-align: center;
+    margin: 0 0 15px 0;
+    color: #6a3b09;
+}
