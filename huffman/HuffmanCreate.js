@@ -91,14 +91,28 @@ function decompress(encodedStr, root) {
     return result;
 }
 
-function treeToString(node, prefix = "") {
+function treeToString(node, indent = "", isRight = false) {
     if (!node) return "";
-    let str = node.char !== null
-        ? `${prefix}'${node.char}' (${node.freq})\n`
-        : `${prefix}* (${node.freq})\n`;
-    str += treeToString(node.left, prefix + "  ");
-    str += treeToString(node.right, prefix + "  ");
+
+    let str = "";
+
+    if (node.right) {
+        str += treeToString(node.right, indent + (isRight ? "     " : " |   "), true);
+    }
+
+    str += indent;
+    str += (isRight ? " /" : " \\") + "-- "; 
+    str += node.char !== null ? `'${node.char}' (${node.freq})` : `* (${node.freq})`;
+    str += "\n";
+
+    if (node.left) {
+        str += treeToString(node.left, indent + (isRight ? " |   " : "     "), false);
+    }
+
     return str;
 }
+
+
+
 
 export { NodeTree, buildHuffmanTree, generateCodes, compress, decompress, treeToString, buildHuffmanTreeWithSteps };
