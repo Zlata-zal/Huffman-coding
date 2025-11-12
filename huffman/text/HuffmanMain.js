@@ -6,7 +6,7 @@ import {
     compress,
     decompress,
     treeToString
-} from '../huffman/HuffmanCreate.js'; 
+} from '../text/HuffmanCreate.js'; 
 
 let tree = null;
 let codesTable = {};
@@ -17,6 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const decompressBtn = document.getElementById("decompressBtn");
     const showTreeBtn = document.getElementById("showTreeBtn");
     const treeView = document.getElementById("treeView");
+    const fileBtn = document.getElementById("loadFileBtn");
+    const textArea = document.getElementById("inputText");
+    const fileInput = document.getElementById("fileInput");
+
+    fileBtn.addEventListener("click", () => {
+        fileInput.click();
+    });
+    fileInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.type !== "text/plain") {
+            alert("Пожалуйста, выберите текстовый файл.");
+            return;
+        }
+        const text = await file.text();
+        textArea.value = text;
+    });
+
+
     compressBtn.addEventListener("click", () => {
         const text = document.getElementById("inputText").value.trim();
         if (!text) {
@@ -94,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const decoded = decompress(encodedString, tree);
         document.getElementById("decodedText").textContent = decoded;
-    });
+        });
 
     showTreeBtn.addEventListener("click", () => {
         const text = document.getElementById("inputText").value.trim();

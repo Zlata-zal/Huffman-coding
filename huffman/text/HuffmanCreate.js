@@ -97,20 +97,31 @@ function treeToString(node, indent = "", isRight = false) {
     let str = "";
 
     if (node.right) {
-        str += treeToString(node.right, indent + (isRight ? "     " : " |   "), true);
+        str += treeToString(node.right, indent + (isRight ? "     " : " │   "), true);
     }
-
     str += indent;
-    str += (isRight ? " /" : " \\") + "-- "; 
+    
+   
+    if (isRight) {
+        str += " //"; 
+    } else {
+        str += " \\"; 
+    }
+    
+    str += "-- ";
     str += node.char !== null ? `'${node.char}' (${node.freq})` : `* (${node.freq})`;
     str += "\n";
 
+    // Левая ветка (обрабатываем второй - она будет НИЖЕ)  
     if (node.left) {
-        str += treeToString(node.left, indent + (isRight ? " |   " : "     "), false);
+        str += treeToString(node.left, indent + (isRight ? " │   " : "     "), false);
     }
+   
 
     return str;
 }
+
+
 
 
 

@@ -23,7 +23,8 @@
             <textarea id="inputText" placeholder="Введите текст для сжатия"></textarea>
             <div class="side-buttons">
                 <button class="side-btn">Текст</button>
-                <button class="side-btn">Файл</button>
+                <button class="side-btn" id="loadFileBtn">Файл</button>
+                <input type="file" id="fileInput" accept=".txt" style="display: none;">
             </div>
         </div>
 
@@ -40,7 +41,7 @@
     <h2>Дерево Хаффмана</h2>
     <div id="treeView" class="tree-view"></div>
 </div>
-<script type="module" src="./huffman/HuffmanMain.js"></script>
+<script type="module" src="./huffman/text/HuffmanMain.js"></script>
 <script>
 window.addEventListener("load", () => {
   lucide.createIcons();
