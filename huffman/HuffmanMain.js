@@ -5,18 +5,94 @@ import {
     generateCodes,
     compress,
     decompress,
-    treeToString
+    treeToString,
+    generateCodesBytes, 
+    compressBytes, 
+    decompressBytes,
+    buildHuffmanTreeBytes
 } from '../huffman/HuffmanCreate.js'; 
 
 let tree = null;
 let codesTable = {};
 let encodedString = "";
 
+
 document.addEventListener("DOMContentLoaded", () => {
+    const fileBtn = document.getElementById("loadFileBtn");
+    const fileInput = document.getElementById("fileInput");
+    const textArea = document.getElementById("inputText");
     const compressBtn = document.getElementById("compressBtn");
     const decompressBtn = document.getElementById("decompressBtn");
-    const showTreeBtn = document.getElementById("showTreeBtn");
-    const treeView = document.getElementById("treeView");
+
+    let fileBytes; 
+    let huffmanRoot;
+    let codebook;
+    let compressedBytes;
+
+    
+    fileBtn.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const allowedExtensions = [".txt", ".md", ".csv", ".json", ".xml", ".html", ".pdf"];
+        const fileName = file.name.toLowerCase();
+        const isAllowed = allowedExtensions.some(ext => fileName.endsWith(ext));
+
+        if (!isAllowed) {
+            alert("Недопустимый формат файла.");
+            return;
+        }
+
+        const arrayBuffer = await file.arrayBuffer();
+        fileBytes = new Uint8Array(arrayBuffer);
+
+        if (!fileName.endsWith(".pdf")) {
+            const text = new TextDecoder().decode(fileBytes);
+            textArea.value = text; 
+        } else {
+            textArea.value = "[PDF-файл выбран — текст не отображается]";
+        }
+
+        console.log("Файл загружен:", file.name);
+        console.log("Размер файла (байт):", fileBytes.length);
+    });
+
+
+    compressBtn.addEventListener("click", () => {
+        if (!fileBytes) {
+            alert("Сначала выберите файл!");
+            return;
+        }
+        huffmanRoot = buildHuffmanTreeBytes(fileBytes);
+        codebook = generateCodesBytes(huffmanRoot);
+        compressedBytes = compressBytes(fileBytes, codebook);
+        console.log("Исходный размер:", fileBytes.length);
+        console.log("Сжатый размер:", compressedBytes.length);
+        alert("Файл успешно сжат!");
+    });
+
+    decompressBtn.addEventListener("click", () => {
+        if (!compressedBytes || !huffmanRoot) {
+            alert("Сначала сожмите файл!");
+            return;
+        }
+        const decompressed = decompressBytes(compressedBytes, huffmanRoot);
+        console.log("Восстановленный размер:", decompressed.length);
+
+        try {
+            const text = new TextDecoder().decode(decompressed);
+            textArea.value = text;
+        } catch (e) {
+            textArea.value = "[PDF или бинарный файл восстановлен — текст не отображается]";
+        }
+
+        alert("Файл успешно восстановлен!");
+    });
+});
+
+
     compressBtn.addEventListener("click", () => {
         const text = document.getElementById("inputText").value.trim();
         if (!text) {
@@ -94,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const decoded = decompress(encodedString, tree);
         document.getElementById("decodedText").textContent = decoded;
-    });
+        });
 
     showTreeBtn.addEventListener("click", () => {
         const text = document.getElementById("inputText").value.trim();
@@ -123,4 +199,4 @@ document.addEventListener("DOMContentLoaded", () => {
                 .join("\n\n");
         }
 });
-});
+
