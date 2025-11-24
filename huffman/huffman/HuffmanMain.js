@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let huffmanRoot;
     let codebook;
     let compressedBytes;
+    let isPdfPlaceholder = false;
+    const PDF_PLACEHOLDER = "[PDF-файл выбран — текст не отображается]";
 
     
     fileBtn.addEventListener("click", () => fileInput.click());
@@ -48,15 +50,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const arrayBuffer = await file.arrayBuffer();
         fileBytes = new Uint8Array(arrayBuffer);
 
-        if (!fileName.endsWith(".pdf")) {
+        const isPdf = fileName.endsWith(".pdf");
+        isPdfPlaceholder = isPdf;
+
+        if (!isPdf) {
             const text = new TextDecoder().decode(fileBytes);
             textArea.value = text; 
         } else {
-            textArea.value = "[PDF-файл выбран — текст не отображается]";
+            textArea.value = PDF_PLACEHOLDER;
         }
 
         console.log("Файл загружен:", file.name);
         console.log("Размер файла (байт):", fileBytes.length);
+    });
+
+    textArea.addEventListener("input", () => {
+        if (isPdfPlaceholder && textArea.value !== PDF_PLACEHOLDER) {
+            isPdfPlaceholder = false;
+        }
     });
 
     decompressBtn.addEventListener("click", () => {
@@ -73,20 +84,22 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) {
             textArea.value = "[PDF или бинарный файл восстановлен — текст не отображается]";
         }
-
         alert("Файл успешно восстановлен!");
     });
-});
 
 
     compressBtn.addEventListener("click", () => {
-    const text = document.getElementById("inputText").value.trim();
+    const rawText = textArea.value;
+    const text = rawText.trim();
+    const hasUserText = text.length > 0 && !isPdfPlaceholder;
 
-    if (text) {
+    if (hasUserText) {
+        const start = performance.now();
     
         tree = buildHuffmanTree(text);
         codesTable = generateCodes(tree);
         encodedString = compress(text, codesTable);
+        const elapsed = performance.now() - start;
 
         document.getElementById("originalSize").textContent = text.length;
         document.getElementById("encodedSize").textContent = encodedString.length;
@@ -97,12 +110,16 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(
             `Текст: ${text.length} символов (~${text.length * 8} бит) → ${encodedString.length} бит`
         );
+        console.log(`Сжатие текста заняло ${elapsed.toFixed(2)} мс`);
     } else if (fileBytes) {
+        const start = performance.now();
         huffmanRoot = buildHuffmanTreeBytes(fileBytes);
         codebook = generateCodesBytes(huffmanRoot);
         compressedBytes = compressBytes(fileBytes, codebook);
+        const elapsed = performance.now() - start;
         console.log(`Файл: исходный размер ${fileBytes.length} байт`);
         console.log(`Файл: сжатый размер ${compressedBytes.length} байт`);
+        console.log(`Сжатие файла заняло ${elapsed.toFixed(2)} мс`);
         alert("Файл успешно сжат!");
     } else {
         alert("Введите текст или выберите файл!");
@@ -277,5 +294,7 @@ window.addEventListener("resize", () => {
                 .map(s => `${s.description}\n${s.nodes.map(n => `${n.char ?? "*"}:${n.freq}`).join(", ")}`)
                 .join("\n\n");
         }
+});
+
 });
 
