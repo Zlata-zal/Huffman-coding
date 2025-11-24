@@ -92,33 +92,78 @@ function decompress(encodedStr, root) {
 }
 
 function treeToString(node, indent = "", isRight = false) {
-    if (!node) return "";
+  if (!node) return "";
 
-    let str = "";
+  let str = "";
 
-    if (node.right) {
-        str += treeToString(node.right, indent + (isRight ? "     " : " │   "), true);
+  if (node.right) {
+    str += treeToString(node.right, indent + (isRight ? "    " : " │  "), true);
+  }
+
+  str += indent;
+  str += isRight ? " ┌── " : " └── ";
+  str += node.char !== null ? `'${node.char}' (${node.freq})` : `* (${node.freq})`;
+  str += "\n";
+
+  if (node.left) {
+    str += treeToString(node.left, indent + (isRight ? " │  " : "    "), false);
+  }
+
+  return str;
+}
+
+function generateCodesBytes(node, prefix = "", codebook = {}) {
+    if (!node) return codebook;
+
+    if (node.char !== undefined) {
+        codebook[node.char] = prefix;
     }
-    str += indent;
-    
-   
-    if (isRight) {
-        str += " //"; 
-    } else {
-        str += " \\"; 
-    }
-    
-    str += "-- ";
-    str += node.char !== null ? `'${node.char}' (${node.freq})` : `* (${node.freq})`;
-    str += "\n";
 
-    // Левая ветка (обрабатываем второй - она будет НИЖЕ)  
-    if (node.left) {
-        str += treeToString(node.left, indent + (isRight ? " │   " : "     "), false);
-    }
-   
+    generateCodesBytes(node.left, prefix + "0", codebook);
+    generateCodesBytes(node.right, prefix + "1", codebook);
 
-    return str;
+    return codebook;
+}
+function compressBytes(data, codebook) {
+    let bits = "";
+    for (const byte of data) bits += codebook[byte];
+
+    const output = [];
+    for (let i = 0; i < bits.length; i += 8) {
+        const byteStr = bits.slice(i, i + 8).padEnd(8, "0");
+        output.push(parseInt(byteStr, 2));
+    }
+    return new Uint8Array(output);
+}
+function decompressBytes(encoded, root) {
+    let result = [];
+    let node = root;
+    const bits = Array.from(encoded).map(b => b.toString(2).padStart(8, "0")).join("");
+
+    for (const bit of bits) {
+        node = bit === "0" ? node.left : node.right;
+        if (node.char !== undefined) {
+            result.push(node.char);
+            node = root;
+        }
+    }
+
+    return new Uint8Array(result);
+}
+function buildHuffmanTreeBytes(data) {
+    const freq = new Map();
+    for (const byte of data) freq.set(byte, (freq.get(byte) || 0) + 1);
+
+    let nodes = Array.from(freq.entries()).map(([char, count]) => ({ char, count }));
+
+    while (nodes.length > 1) {
+        nodes.sort((a, b) => a.count - b.count);
+        const left = nodes.shift();
+        const right = nodes.shift();
+        nodes.push({ left, right, count: left.count + right.count });
+    }
+
+    return nodes[0]; // корень дерева
 }
 
 
@@ -126,4 +171,14 @@ function treeToString(node, indent = "", isRight = false) {
 
 
 
-export { NodeTree, buildHuffmanTree, generateCodes, compress, decompress, treeToString, buildHuffmanTreeWithSteps };
+export { NodeTree, 
+    buildHuffmanTree, 
+    generateCodes, 
+    compress, 
+    decompress, 
+    treeToString, 
+    buildHuffmanTreeWithSteps, 
+    generateCodesBytes, 
+    compressBytes, 
+    decompressBytes,
+    buildHuffmanTreeBytes };

@@ -151,14 +151,13 @@ pre {
     word-wrap: break-word;
 }
 .tree-container {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 8px;
+    margin: 30px auto 0;
+    padding: 20px 160px 20px 200px;
+    border-radius: 10px;
     box-shadow: 0 0 10px  #6a3b09;
     background-color: #fff;
-    font-family: monospace;
-    white-space: pre;
-    max-height: 300px;
+    font-family: "Zerno", sans-serif;
+    max-height: 420px;
     overflow: auto;
     width: 80%;
     align-self: stretch; 
@@ -171,84 +170,88 @@ pre {
 }
 .tree-view {
   display: flex;
-  justify-content: center;
-  margin-top: 30px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 120px;
+  overflow-x: auto;
+  padding: 0 220px 20px 260px;
+  box-sizing: border-box;
+  position: relative;
+  scroll-padding-left: 120px;
 }
+
+.tree-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tree-line {
+  stroke: #6a3b09;
+  stroke-width: 2;
+}
+
 .tree-node {
-    display: inline-block;
-    text-align: center;
-    vertical-align: top;
-    position: relative;
-    margin: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px 20px;
+  text-align: center;
+  z-index: 1;
+}
+
+.node-circle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .node-circle {
-    display: inline-block;
-    padding: 10px;
-    border-radius: 50%;
-    border: 2px solid #6a3b09;
-    background-color: #fcb861;
-    min-width: 30px;
-    min-height: 30px;
-    line-height: 30px;
-    font-family: monospace;
-    font-weight: bold;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid #6a3b09;
+  background-color: #fcb861;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
+.node-code {
+  padding: 6px 10px;
+  border-radius: 16px;
+  background-color: rgba(106, 59, 9, 0.08);
+  border: 1px solid rgba(106, 59, 9, 0.2);
+  font-size: 14px;
+  color: #3b2104;
+  font-weight: 600;
+  white-space: nowrap;
+}
 
+.node-freq {
+  margin-top: 6px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background-color: rgba(252, 184, 97, 0.3);
+  border: 1px solid rgba(106, 59, 9, 0.25);
+  font-size: 13px;
+  color: #4b2b06;
+}
 
 .children {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  position: relative; 
-}
-.tree-node::after {
-  content: "";
-  position: absolute;
-  top: 40px; 
-  left: 50%;
-  width: 2px;
-  height: 20px; 
-  background-color: #6a3b09;
-  transform: translateX(-50%);
-  z-index: -1;
-}
-
-.children::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 15%;
-  right: 15%;
-  height: 2px;
-  background-color: #6a3b09;
-  z-index: -1;
-}
-.tree-node.has-children::after {
-  content: "";
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  width: 2px;
-  height: 20px;
-  background-color: #6a3b09;
-  transform: translateX(-50%);
-  z-index: -1;
-}
-
-.children > .tree-node::before {
-  content: "";
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  width: 2px;
-  height: 20px;
-  background-color: #6a3b09;
-  transform: translateX(-50%);
-  z-index: -1;
-}
-.tree-view {
-  white-space: pre;           
-  font-family: monospace;    
+  justify-content: center;
+  gap: 60px;
+  position: relative;
+  margin-top: 40px;
+  padding-top: 5px;
 }
